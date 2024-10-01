@@ -1,0 +1,36 @@
+import '../../domain/entities/product.dart';
+import '../../domain/repositories/product_repository.dart';
+import '../data_sources/product_local_data_source.dart';
+import '../data_sources/product_remote_data_source.dart';
+
+class ProductRepositoryImpl implements ProductRepository {
+  final ProductRemoteDataSource remoteDataSource;
+  final ProductLocalDataSource localDataSource;
+
+  ProductRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
+
+  @override
+  Future<List<Product>> getProducts() async {
+    try {
+      final localProducts = await localDataSource.getProducts();
+      if (localProducts.isNotEmpty) {
+        return localProducts;
+      } else {
+        final remoteProducts = await remoteDataSource.fetchProducts();
+        await localDataSource.cacheProducts(remoteProducts);
+        return remoteProducts;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Product> getProductById(String id) {
+    // Similar implementation
+    throw UnimplementedError();
+  }
+}
