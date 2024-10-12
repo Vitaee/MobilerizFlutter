@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/domain/entities/product.dart';
+import 'package:flutter_app/infrastructure/models/product_model.dart';
 import '../pages/product_details_page.dart';
 
 class ProductListItem extends StatelessWidget {

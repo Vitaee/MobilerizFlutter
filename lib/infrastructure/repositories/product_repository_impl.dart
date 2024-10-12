@@ -1,5 +1,5 @@
-import '../../domain/entities/product.dart';
-import '../../domain/repositories/product_repository.dart';
+import 'package:flutter_app/domain/repositories/product_repository.dart';
+import 'package:flutter_app/infrastructure/models/product_model.dart';
 import '../data_sources/product_local_data_source.dart';
 import '../data_sources/product_remote_data_source.dart';
 
@@ -24,13 +24,8 @@ class ProductRepositoryImpl implements ProductRepository {
         return remoteProducts;
       }
     } catch (e) {
+      print(e);
       rethrow;
     }
-  }
-
-  @override
-  Future<Product> getProductById(String id) {
-    // Similar implementation
-    throw UnimplementedError();
   }
 }

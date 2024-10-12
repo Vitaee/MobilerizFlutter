@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/application/usecases/fetch_product_usecase.dart';
-import '../../domain/entities/product.dart';
+import 'package:flutter_app/infrastructure/models/product_model.dart';
 
 class ProductProvider with ChangeNotifier {
   final FetchProductsUseCase fetchProductsUseCase;
@@ -27,8 +27,6 @@ class ProductProvider with ChangeNotifier {
       _filteredProducts = _products;
       _errorMessage = '';
     } catch (e) {
-      print(e.toString());
-      print("^^^^^^^^^^^^");
       _errorMessage = 'Failed to load products.';
     }
     _isLoading = false;

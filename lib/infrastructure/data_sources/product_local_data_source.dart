@@ -1,12 +1,12 @@
+import 'dart:async';
+import 'package:flutter_app/infrastructure/models/product_model.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../models/product_model.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-
 abstract class ProductLocalDataSource {
-  Future<List<ProductModel>> getProducts();
-  Future<void> cacheProducts(List<ProductModel> products);
+  Future<List<Product>> getProducts();
+  Future<void> cacheProducts(List<Product> products);
 }
 
 class ProductLocalDataSourceImpl implements ProductLocalDataSource {
@@ -20,23 +20,24 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   }
 
   @override
-  Future<List<ProductModel>> getProducts() async {
+  Future<List<Product>> getProducts() async {
     final db = await database;
+
     final List<Map<String, dynamic>> maps = await db.query('products');
 
     return List.generate(maps.length, (i) {
-      return ProductModel.fromJson(maps[i]);
+      return Product.fromMap(maps[i]);
     });
   }
 
   @override
-  Future<void> cacheProducts(List<ProductModel> products) async {
+  Future<void> cacheProducts(List<Product> products) async {
     final db = await database;
     final batch = db.batch();
     for (var product in products) {
       batch.insert(
         'products',
-        product.toJson(),
+        product.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
@@ -61,7 +62,9 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         name TEXT,
         description TEXT,
         price REAL,
-        photoUrl TEXT
+        photoUrl TEXT,
+        category TEXT,
+        brandId TEXT
       )
     ''');
   }

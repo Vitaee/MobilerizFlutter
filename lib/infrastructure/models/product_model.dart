@@ -1,50 +1,110 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
-import '../../domain/entities/product.dart';
+part 'product_model.g.dart';
 
-class ProductModel extends Product {
-  ProductModel({
-    required String id,
-    required String name,
-    required String description,
-    required double price,
-    required String photoUrl,
-    // Add other fields if necessary
-  }) : super(
-          id: id,
-          name: name,
-          description: description,
-          price: price,
-          photoUrl: photoUrl,
-        );
+@JsonSerializable()
+class Product {
+  @JsonKey(name: '_id')
+  final String id;
 
-  // Factory method to create a ProductModel from JSON
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      price: (json['price'] as num).toDouble(),
-      photoUrl: json['photoUrl'] as String,
-      // Initialize other fields if necessary
+  @JsonKey(name: 'product_name')
+  final String name;
+
+  @JsonKey(name: 'product_description')
+  final String description;
+
+  @JsonKey(name: 'product_price')
+  final double price;
+
+  @JsonKey(name: 'product_image')
+  final String photoUrl;
+
+  @JsonKey(name: 'product_category')
+  final String? category;
+
+  @JsonKey(name: 'product_brand_id')
+  final String? brandId;
+
+  Product({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.photoUrl,
+    this.category,
+    this.brandId,
+  });
+
+  factory Product.fromJson(Map<String, dynamic> json) =>
+      _$ProductFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductToJson(this);
+
+  // Database mapping
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      description: map['description'] as String,
+      price: (map['price'] as num).toDouble(),
+      photoUrl: map['photoUrl'] as String,
+      category: map['category'] as String?,
+      brandId: map['brandId'] as String?,
     );
   }
 
-  // Method to convert ProductModel to JSON
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'description': description,
       'price': price,
       'photoUrl': photoUrl,
-      // Add other fields if necessary
+      'category': category,
+      'brandId': brandId,
     };
   }
+}
 
-  // Static method to parse a list of ProductModels from JSON string
-  static List<ProductModel> listFromJson(String jsonString) {
-    final Iterable<dynamic> jsonList = json.decode(jsonString);
-    return jsonList.map((json) => ProductModel.fromJson(json)).toList();
-  }
+@JsonSerializable()
+class Pagination {
+  @JsonKey(name: 'page_number')
+  final int pageNumber;
+
+  @JsonKey(name: 'per_page')
+  final int perPage;
+
+  @JsonKey(name: 'number_of_data')
+  final int numberOfData;
+
+  @JsonKey(name: 'number_of_page')
+  final int numberOfPage;
+
+  Pagination({
+    required this.pageNumber,
+    required this.perPage,
+    required this.numberOfData,
+    required this.numberOfPage,
+  });
+
+  factory Pagination.fromJson(Map<String, dynamic> json) =>
+      _$PaginationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PaginationToJson(this);
+}
+
+@JsonSerializable()
+class ProductResponse {
+  final List<Product> data;
+  final Pagination pagination;
+
+  ProductResponse({
+    required this.data,
+    required this.pagination,
+  });
+
+  factory ProductResponse.fromJson(Map<String, dynamic> json) =>
+      _$ProductResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ProductResponseToJson(this);
 }

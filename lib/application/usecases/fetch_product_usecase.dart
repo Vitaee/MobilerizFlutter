@@ -1,4 +1,5 @@
-import '../../domain/entities/product.dart';
+import 'package:flutter_app/infrastructure/models/product_model.dart';
+
 import '../../domain/repositories/product_repository.dart';
 
 class FetchProductsUseCase {
